@@ -206,9 +206,7 @@ export default function App() {
       }}
     >
       {/* Kondisional rendering berdasarkan state role */}
-      {role === "pegawai" && <HalamanPegawai />}
-      {role === "admin" && <HalamanAdmin />}
-      {role === "pimpinan" && <HalamanPimpinan />}
+      <HalamanPimpinan />
 
       {/* Navigasi tombol di bawah */}
       <div
