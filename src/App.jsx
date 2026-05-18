@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { DATA_PEGAWAI } from "./dataPegawai";
+import { DATA_PEGAWAI } from "./datapegawai";
 import { QRCodeSVG } from "qrcode.react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 
