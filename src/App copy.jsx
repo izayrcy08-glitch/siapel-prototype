@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { DATA_PEGAWAI } from "./dataPegawai";
 import { QRCodeSVG } from "qrcode.react";
 import { Html5QrcodeScanner } from "html5-qrcode";
-
 function HalamanPegawai() {
   const [search, setSearch] = useState("");
   const [hasilScan, setHasilScan] = useState("");
@@ -117,7 +116,6 @@ function HalamanPegawai() {
     </div>
   );
 }
-
 function HalamanAdmin() {
   const [qrValue, setQrValue] = useState("");
   const [countdown, setCountdown] = useState(15);
@@ -181,7 +179,6 @@ function HalamanAdmin() {
     </div>
   );
 }
-
 function HalamanPimpinan() {
   const totalPegawai = DATA_PEGAWAI.length;
 
@@ -268,7 +265,6 @@ function HalamanPimpinan() {
     </div>
   );
 }
-
 export default function App() {
   const role = useMemo(() => {
     const params = new URLSearchParams(window.location.search);
