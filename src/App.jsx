@@ -276,9 +276,14 @@ export default function App() {
     return params.get("role") || "pegawai";
   }, []);
 
-  const pindahRole = (roleBaru) => {
-    window.location.search = `?role=${roleBaru}`;
-  };
+  const url = new URL(window.location);
+
+  url.searchParams.set("role", roleBaru);
+
+  window.history.pushState({}, "", url);
+
+  window.location.reload();
+};
 
   return (
     <div
