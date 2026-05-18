@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { DATA_PEGAWAI } from "./datapegawai";
 import { QRCodeSVG } from "qrcode.react";
 import { Html5QrcodeScanner } from "html5-qrcode";
@@ -7,60 +7,46 @@ function HalamanPegawai() {
   const [search, setSearch] = useState("");
   const [hasilScan, setHasilScan] = useState("");
 
-  const filteredPegawai = DATA_PEGAWAI.filter((pegawai) =>
+  const filteredPegawai = DATA_PEGAWAI ? DATA_PEGAWAI.filter((pegawai) =>
     pegawai.nama.toLowerCase().includes(search.toLowerCase())
-  );
+  ) : [];
 
   useEffect(() => {
+    // Membuat instance scanner
     const scanner = new Html5QrcodeScanner(
       "reader",
-      {
-        fps: 10,
-        qrbox: 250,
-      },
+      { fps: 10, qrbox: 250 },
       false
     );
 
+    // Menjalankan scanner
     scanner.render(
       (decodedText) => {
         setHasilScan(decodedText);
-        scanner.clear().catch(() => {});
+        scanner.clear().catch((err) => console.log("Gagal stop scanner:", err));
       },
-      () => {}
+      (error) => {
+        // Abaikan eror scan standar agar konsol bersih
+      }
     );
 
+    // PENTING: Fungsi pembersih saat komponen HalamanPegawai hilang (pindah role)
     return () => {
-      scanner.clear().catch(() => {});
+      scanner.clear().catch((err) => console.log("Gagal bersihkan scanner:", err));
     };
   }, []);
 
   return (
     <div>
-      <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
-        Halaman Pegawai
-      </h1>
+      <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>Halaman Pegawai</h1>
       <p>Prototype SIAPEL — Absensi Pegawai</p>
 
-      <div
-        id="reader"
-        style={{
-          marginTop: "20px",
-          marginBottom: "20px",
-        }}
-      />
+      {/* Kontainer Kamera QR */}
+      <div id="reader" style={{ marginTop: "20px", marginBottom: "20px" }} />
 
       {hasilScan && (
-        <div
-          style={{
-            backgroundColor: "#d1fae5",
-            padding: "20px",
-            borderRadius: "12px",
-            marginBottom: "20px",
-          }}
-        >
-          <h2 style={{ color: "#065f46", marginBottom: "10px" }}>
-            ✅ Absensi Berhasil
-          </h2>
+        <div style={{ backgroundColor: "#d1fae5", padding: "20px", borderRadius: "12px", marginBottom: "20px" }}>
+          <h2 style={{ color: "#065f46", marginBottom: "10px" }}>✅ Absensi Berhasil</h2>
           <p>{hasilScan}</p>
           <p>QR berhasil diverifikasi dan absensi telah dicatat.</p>
         </div>
@@ -85,15 +71,7 @@ function HalamanPegawai() {
       {search && (
         <div style={{ marginTop: "20px" }}>
           {filteredPegawai.map((pegawai) => (
-            <div
-              key={pegawai.id}
-              style={{
-                backgroundColor: "white",
-                padding: "15px",
-                borderRadius: "12px",
-                marginBottom: "10px",
-              }}
-            >
+            <div key={pegawai.id} style={{ backgroundColor: "white", padding: "15px", borderRadius: "12px", marginBottom: "10px" }}>
               <strong>{pegawai.nama}</strong>
               <p>{pegawai.jabatan}</p>
               <small>{pegawai.bidang}</small>
@@ -116,7 +94,6 @@ function HalamanAdmin() {
 
   useEffect(() => {
     generateQR();
-
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -132,40 +109,25 @@ function HalamanAdmin() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
-        Halaman Admin
-      </h1>
+      <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>Halaman Admin</h1>
       <p>QR Absensi Realtime</p>
-
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "30px",
-          borderRadius: "20px",
-          marginTop: "20px",
-        }}
-      >
+      <div style={{ backgroundColor: "white", padding: "30px", borderRadius: "20px", marginTop: "20px" }}>
         <QRCodeSVG value={qrValue} size={250} />
       </div>
-
-      <p style={{ marginTop: "20px", fontSize: "18px" }}>
-        Refresh QR dalam: {countdown} detik
-      </p>
+      <p style={{ marginTop: "20px", fontSize: "18px" }}>Refresh QR dalam: {countdown} detik</p>
       <small>{qrValue}</small>
     </div>
   );
 }
 
 function HalamanPimpinan() {
-  const totalPegawai = DATA_PEGAWAI.length;
+  const totalPegawai = DATA_PEGAWAI ? DATA_PEGAWAI.length : 0;
   const totalHadir = 3;
-  const persentase = Math.round((totalHadir / totalPegawai) * 100);
+  const persentase = totalPegawai > 0 ? Math.round((totalHadir / totalPegawai) * 100) : 0;
 
   return (
     <div>
-      <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
-        Dashboard Pimpinan
-      </h1>
+      <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>Dashboard Pimpinan</h1>
       <p>Monitoring realtime absensi pegawai SIAPEL</p>
 
       <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "20px", marginTop: "20px" }}>
@@ -187,13 +149,8 @@ function HalamanPimpinan() {
 }
 
 export default function App() {
-  // Menggunakan state React murni, default langsung ke 'pegawai'
   const [role, setRole] = useState("pegawai");
 
-  // Fungsi pindah role yang sangat simpel dan aman untuk Vercel
-  const pindahRole = (roleBaru) => {
-    setRole(roleBaru);
-  };
   return (
     <div
       style={{
@@ -205,8 +162,9 @@ export default function App() {
         paddingBottom: "100px",
       }}
     >
-      {/* Kondisional rendering berdasarkan state role */}
-      <HalamanPimpinan />
+      {role === "pegawai" && <HalamanPegawai />}
+      {role === "admin" && <HalamanAdmin />}
+      {role === "pimpinan" && <HalamanPimpinan />}
 
       {/* Navigasi tombol di bawah */}
       <div
@@ -218,17 +176,12 @@ export default function App() {
           display: "flex",
           justifyContent: "center",
           gap: "10px",
+          zIndex: 9999, // Memastikan tombol selalu berada di lapisan paling atas dan bisa diklik
         }}
       >
-        <button onClick={() => pindahRole("pegawai")} style={buttonStyle}>
-          Pegawai
-        </button>
-        <button onClick={() => pindahRole("admin")} style={buttonStyle}>
-          Admin
-        </button>
-        <button onClick={() => pindahRole("pimpinan")} style={buttonStyle}>
-          Pimpinan
-        </button>
+        <button onClick={() => setRole("pegawai")} style={buttonStyle}>Pegawai</button>
+        <button onClick={() => setRole("admin")} style={buttonStyle}>Admin</button>
+        <button onClick={() => setRole("pimpinan")} style={buttonStyle}>Pimpinan</button>
       </div>
     </div>
   );
