@@ -187,26 +187,13 @@ function HalamanPimpinan() {
 }
 
 export default function App() {
-  // 1. Ambil role dari URL saat pertama kali halaman dimuat
-  const [role, setRole] = useState(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("role") || "pegawai";
-    }
-    return "pegawai";
-  });
+  // Menggunakan state React murni, default langsung ke 'pegawai'
+  const [role, setRole] = useState("pegawai");
 
-  // 2. Fungsi untuk mengubah role tanpa perlu reload halaman (anti-crash)
+  // Fungsi pindah role yang sangat simpel dan aman untuk Vercel
   const pindahRole = (roleBaru) => {
     setRole(roleBaru);
-
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      url.searchParams.set("role", roleBaru);
-      window.history.pushState({}, "", url);
-    }
   };
-
   return (
     <div
       style={{
