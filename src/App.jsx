@@ -24,7 +24,6 @@ function HalamanPegawai() {
     scanner.render(
       (decodedText) => {
         setHasilScan(decodedText);
-
         scanner.clear().catch(() => {});
       },
       () => {}
@@ -40,7 +39,6 @@ function HalamanPegawai() {
       <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
         Halaman Pegawai
       </h1>
-
       <p>Prototype SIAPEL — Absensi Pegawai</p>
 
       <div
@@ -60,20 +58,11 @@ function HalamanPegawai() {
             marginBottom: "20px",
           }}
         >
-          <h2
-            style={{
-              color: "#065f46",
-              marginBottom: "10px",
-            }}
-          >
+          <h2 style={{ color: "#065f46", marginBottom: "10px" }}>
             ✅ Absensi Berhasil
           </h2>
-
           <p>{hasilScan}</p>
-
-          <p>
-            QR berhasil diverifikasi dan absensi telah dicatat.
-          </p>
+          <p>QR berhasil diverifikasi dan absensi telah dicatat.</p>
         </div>
       )}
 
@@ -106,9 +95,7 @@ function HalamanPegawai() {
               }}
             >
               <strong>{pegawai.nama}</strong>
-
               <p>{pegawai.jabatan}</p>
-
               <small>{pegawai.bidang}</small>
             </div>
           ))}
@@ -124,7 +111,6 @@ function HalamanAdmin() {
 
   const generateQR = () => {
     const kodeBaru = `SIAPEL-${Date.now()}`;
-
     setQrValue(kodeBaru);
   };
 
@@ -137,7 +123,6 @@ function HalamanAdmin() {
           generateQR();
           return 15;
         }
-
         return prev - 1;
       });
     }, 1000);
@@ -146,17 +131,10 @@ function HalamanAdmin() {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
         Halaman Admin
       </h1>
-
       <p>QR Absensi Realtime</p>
 
       <div
@@ -167,16 +145,12 @@ function HalamanAdmin() {
           marginTop: "20px",
         }}
       >
-        <QRCodeSVG
-          value={qrValue}
-          size={250}
-        />
+        <QRCodeSVG value={qrValue} size={250} />
       </div>
 
       <p style={{ marginTop: "20px", fontSize: "18px" }}>
         Refresh QR dalam: {countdown} detik
       </p>
-
       <small>{qrValue}</small>
     </div>
   );
@@ -184,106 +158,54 @@ function HalamanAdmin() {
 
 function HalamanPimpinan() {
   const totalPegawai = DATA_PEGAWAI.length;
-
   const totalHadir = 3;
-
-  const persentase = Math.round(
-    (totalHadir / totalPegawai) * 100
-  );
+  const persentase = Math.round((totalHadir / totalPegawai) * 100);
 
   return (
     <div>
-      <h1
-        style={{
-          fontSize: "32px",
-          marginBottom: "10px",
-        }}
-      >
+      <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
         Dashboard Pimpinan
       </h1>
+      <p>Monitoring realtime absensi pegawai SIAPEL</p>
 
-      <p>
-        Monitoring realtime absensi pegawai SIAPEL
-      </p>
-
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "20px",
-          borderRadius: "20px",
-          marginTop: "20px",
-        }}
-      >
+      <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "20px", marginTop: "20px" }}>
         <h2>Total Pegawai</h2>
-
-        <p
-          style={{
-            fontSize: "42px",
-            fontWeight: "bold",
-          }}
-        >
-          {totalPegawai}
-        </p>
+        <p style={{ fontSize: "42px", fontWeight: "bold" }}>{totalPegawai}</p>
       </div>
 
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "20px",
-          borderRadius: "20px",
-          marginTop: "20px",
-        }}
-      >
+      <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "20px", marginTop: "20px" }}>
         <h2>Total Hadir</h2>
-
-        <p
-          style={{
-            fontSize: "42px",
-            fontWeight: "bold",
-          }}
-        >
-          {totalHadir}
-        </p>
+        <p style={{ fontSize: "42px", fontWeight: "bold" }}>{totalHadir}</p>
       </div>
 
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "20px",
-          borderRadius: "20px",
-          marginTop: "20px",
-        }}
-      >
+      <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "20px", marginTop: "20px" }}>
         <h2>Persentase Hadir</h2>
-
-        <p
-          style={{
-            fontSize: "42px",
-            fontWeight: "bold",
-          }}
-        >
-          {persentase}%
-        </p>
+        <p style={{ fontSize: "42px", fontWeight: "bold" }}>{persentase}%</p>
       </div>
     </div>
   );
 }
 
 export default function App() {
-  const role = useMemo(() => {
-    const params = new URLSearchParams(window.location.search);
+  // 1. Ambil role dari URL saat pertama kali halaman dimuat
+  const [role, setRole] = useState(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("role") || "pegawai";
+    }
+    return "pegawai";
+  });
 
-    return params.get("role") || "pegawai";
-  }, []);
+  // 2. Fungsi untuk mengubah role tanpa perlu reload halaman (anti-crash)
+  const pindahRole = (roleBaru) => {
+    setRole(roleBaru);
 
-  const url = new URL(window.location);
-
-  url.searchParams.set("role", roleBaru);
-
-  window.history.pushState({}, "", url);
-
-  window.location.reload();
-};
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("role", roleBaru);
+      window.history.pushState({}, "", url);
+    }
+  };
 
   return (
     <div
@@ -296,10 +218,12 @@ export default function App() {
         paddingBottom: "100px",
       }}
     >
+      {/* Kondisional rendering berdasarkan state role */}
       {role === "pegawai" && <HalamanPegawai />}
       {role === "admin" && <HalamanAdmin />}
       {role === "pimpinan" && <HalamanPimpinan />}
 
+      {/* Navigasi tombol di bawah */}
       <div
         style={{
           position: "fixed",
@@ -311,24 +235,13 @@ export default function App() {
           gap: "10px",
         }}
       >
-        <button
-          onClick={() => pindahRole("pegawai")}
-          style={buttonStyle}
-        >
+        <button onClick={() => pindahRole("pegawai")} style={buttonStyle}>
           Pegawai
         </button>
-
-        <button
-          onClick={() => pindahRole("admin")}
-          style={buttonStyle}
-        >
+        <button onClick={() => pindahRole("admin")} style={buttonStyle}>
           Admin
         </button>
-
-        <button
-          onClick={() => pindahRole("pimpinan")}
-          style={buttonStyle}
-        >
+        <button onClick={() => pindahRole("pimpinan")} style={buttonStyle}>
           Pimpinan
         </button>
       </div>
