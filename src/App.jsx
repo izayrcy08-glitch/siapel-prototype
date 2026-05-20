@@ -552,117 +552,157 @@ function HalamanPegawai() {
     </div>
   )
 
-  // ── Step 3: Scan QR ──
-  if (step === 3) return (
-    <div style={{ padding: '24px 16px 100px', maxWidth: 480, margin: '0 auto', minHeight: '100vh' }}>
+  // ── Step 3: Scan QR (VERSI BARU ANTI-GAGAL) ──
+  if (step === 3) {
+    // Pengaman otomatis agar kamera terpanggil setelah halaman siap
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        if (scanStatus !== 'success' && scanStatus !== 'error' && scanStatus !== 'duplicate' && !cameraErr) {
+          startScanner();
+        }
+      }, 400);
+      return () => clearTimeout(timer);
+    }, []);
 
-      {/* SUCCESS */}
-      {scanStatus === 'success' && (
-        <div style={{ textAlign: 'center', animation: 'fadeUp .3s ease' }}>
-          <div style={{ fontSize: 96, animation: 'checkPop .5s cubic-bezier(.36,.07,.19,.97)', marginBottom: 16 }}>✅</div>
-          <div style={{ fontSize: 32, fontWeight: 800, color: T.green, marginBottom: 8 }}>HADIR</div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: T.text, marginBottom: 4 }}>
-            Selamat, {selected.nama.split(' ')[0]}!
-          </div>
-          <div style={{ color: T.textSub, marginBottom: 4 }}>Absensi Anda berhasil tercatat.</div>
-          <div style={{ fontFamily: T.mono, color: T.textSub, fontSize: 13, marginBottom: 28 }}>
-            🕐 {scanTime}
-          </div>
-          <button onClick={reset} style={{ ...css.btn(T.navy), maxWidth: 240, margin: '0 auto' }}>
-            Selesai
-          </button>
-        </div>
-      )}
+    return (
+      <div style={{ padding: '24px 16px 100px', maxWidth: 480, margin: '0 auto', minHeight: '100vh' }}>
 
-      {/* ERROR / DUPLICATE */}
-      {(scanStatus === 'error' || scanStatus === 'duplicate') && (
-        <div style={{ textAlign: 'center', animation: 'fadeUp .3s ease' }}>
-          <div style={{ fontSize: 72, marginBottom: 16 }}>{scanStatus === 'duplicate' ? '⚠️' : '❌'}</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: scanStatus === 'duplicate' ? T.amber : T.red, marginBottom: 8 }}>
-            {scanStatus === 'duplicate' ? 'Sudah Absen' : 'Gagal'}
-          </div>
-          <div style={{ color: T.textSub, marginBottom: 28, padding: '0 20px' }}>{scanMsg}</div>
-          <button
-            onClick={() => { setScanStatus(null); setCameraErr(false) }}
-            style={{ ...css.btn(T.navy), maxWidth: 240, margin: '0 auto 10px' }}
-          >
-            Coba Lagi
-          </button>
-          <button onClick={reset} style={{ ...css.btn('transparent', T.textSub), border: `1px solid ${T.border}`, maxWidth: 240, margin: '0 auto', fontSize: 14 }}>
-            Kembali ke Awal
-          </button>
-        </div>
-      )}
-
-      {/* SCAN UI */}
-      {!scanStatus && (
-        <div style={{ animation: 'fadeUp .3s ease' }}>
-          <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <div style={{ fontSize: 13, color: T.textSub, fontWeight: 600, marginBottom: 4 }}>LANGKAH 3 / 3</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: T.navy, marginBottom: 6 }}>Scan QR Code</div>
-            <div style={{ color: T.textSub, fontSize: 14 }}>Arahkan kamera ke QR Code di layar Admin</div>
-          </div>
-
-          {/* Pegawai chip */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 10, background: '#fff',
-            borderRadius: 10, padding: '10px 14px', marginBottom: 20,
-            border: `1px solid ${T.border}`,
-          }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 8, background: T.navy,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#fff', fontWeight: 800, fontSize: 14, flexShrink: 0,
-            }}>{selected.nama.charAt(0)}</div>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 13, color: T.text }}>{selected.nama}</div>
-              <div style={{ fontSize: 11, color: T.textSub, fontFamily: T.mono }}>{selected.nip}</div>
+        {/* SUCCESS */}
+        {scanStatus === 'success' && (
+          <div style={{ textAlign: 'center', animation: 'fadeUp .3s ease' }}>
+            <div style={{ fontSize: 96, animation: 'checkPop .5s cubic-bezier(.36,.07,.19,.97)', marginBottom: 16 }}>✅</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color: T.green, marginBottom: 8 }}>HADIR</div>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T.text, marginBottom: 4 }}>
+              Selamat, {selected.nama.split(' ')[0]}!
             </div>
+            <div style={{ color: T.textSub, marginBottom: 4 }}>Absensi Anda berhasil tercatat.</div>
+            <div style={{ fontFamily: T.mono, color: T.textSub, fontSize: 13, marginBottom: 28 }}>
+              🕐 {scanTime}
+            </div>
+            <button onClick={reset} style={{ ...css.btn(T.navy), maxWidth: 240, margin: '0 auto' }}>
+              Selesai
+            </button>
           </div>
+        )}
 
-          {/* Camera container */}
-          <div style={{
-            borderRadius: 16, overflow: 'hidden', background: '#000',
-            minHeight: scanStatus === 'scanning' ? 300 : 0,
-            marginBottom: 16,
-          }}>
-            <div id={scannerDivId} />
+        {/* ERROR / DUPLICATE */}
+        {(scanStatus === 'error' || scanStatus === 'duplicate') && (
+          <div style={{ textAlign: 'center', animation: 'fadeUp .3s ease' }}>
+            <div style={{ fontSize: 72, marginBottom: 16 }}>{scanStatus === 'duplicate' ? '⚠️' : '❌'}</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: scanStatus === 'duplicate' ? T.amber : T.red, marginBottom: 8 }}>
+              {scanStatus === 'duplicate' ? 'Sudah Absen' : 'Gagal'}
+            </div>
+            <div style={{ color: T.textSub, marginBottom: 28, padding: '0 20px' }}>{scanMsg}</div>
+            <button
+              onClick={() => { setScanStatus(null); setCameraErr(false) }}
+              style={{ ...css.btn(T.navy), maxWidth: 240, margin: '0 auto 10px' }}
+            >
+              Coba Lagi
+            </button>
+            <button onClick={reset} style={{ ...css.btn('transparent', T.textSub), border: `1px solid ${T.border}`, maxWidth: 240, margin: '0 auto', fontSize: 14 }}>
+              Kembali ke Awal
+            </button>
           </div>
+        )}
 
-          {cameraErr ? (
+        {/* SCAN UI */}
+        {!scanStatus && (
+          <div style={{ animation: 'fadeUp .3s ease' }}>
+            <div style={{ textAlign: 'center', marginBottom: 24 }}>
+              <div style={{ fontSize: 13, color: T.textSub, fontWeight: 600, marginBottom: 4 }}>LANGKAH 3 / 3</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: T.navy, marginBottom: 6 }}>Scan QR Code</div>
+              <div style={{ color: T.textSub, fontSize: 14 }}>Arahkan kamera ke QR Code di layar Admin</div>
+            </div>
+
+            {/* Pegawai chip */}
             <div style={{
-              background: '#fef2f2', border: `1px solid #fecaca`,
-              borderRadius: 12, padding: 16, textAlign: 'center', marginBottom: 16,
+              display: 'flex', alignItems: 'center', gap: 10, background: '#fff',
+              borderRadius: 10, padding: '10px 14px', marginBottom: 20,
+              border: `1px solid ${T.border}`,
             }}>
-              <div style={{ fontSize: 24, marginBottom: 8 }}>📵</div>
-              <div style={{ fontWeight: 700, color: T.red, marginBottom: 4 }}>Kamera tidak dapat diakses</div>
-              <div style={{ fontSize: 13, color: T.textSub }}>
-                Gunakan Chrome di Android atau Safari di iPhone. Pastikan izin kamera diaktifkan.
+              <div style={{
+                width: 36, height: 36, borderRadius: 8, background: T.navy,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff', fontWeight: 800, fontSize: 14, flexShrink: 0,
+              }}>{selected.nama.charAt(0)}</div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 13, color: T.text }}>{selected.nama}</div>
+                <div style={{ fontSize: 11, color: T.textSub, fontFamily: T.mono }}>{selected.nip}</div>
               </div>
             </div>
-          ) : (
-            <button
-              onClick={scanStatus === 'scanning' ? stopScanner : startScanner}
-              style={{
-                ...css.btn(scanStatus === 'scanning' ? T.red : T.navy),
-                fontSize: 16, padding: '14px',
-              }}
-            >
-              {scanStatus === 'scanning' ? '✖ Tutup Kamera' : '📷 Buka Kamera & Scan QR'}
-            </button>
-          )}
 
-          <button
-            onClick={() => setStep(2)}
-            style={{ ...css.btn('transparent', T.textSub), border: `1px solid ${T.border}`, marginTop: 10, fontSize: 14 }}
-          >
-            ← Kembali
-          </button>
-        </div>
-      )}
-      <NavBar role="pegawai" />
-    </div>
-  )
+            {/* Camera container */}
+            <div style={{
+              borderRadius: 16, overflow: 'hidden', background: '#000',
+              minHeight: 220,
+              marginBottom: 16,
+            }}>
+              <div id={scannerDivId} style={{ width: '100%' }} />
+            </div>
+
+            {/* KOTAK SIMULASI UPLOAD GAMBAR - DIPASANG DI SINI AGAR TETAP MUNCUL SAAT ERROR */}
+            <div style={{ background: '#f0f4f8', borderRadius: 12, padding: 14, textAlign: 'center', marginBottom: 16, border: '1px solid #cbd5e1' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: T.navy, marginBottom: 6 }}>
+                🛠️ ALTERNATIF SIMULASI SCAN (ANTI-GAGAL DEMO)
+              </div>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file && window.Html5Qrcode) {
+                    const html5QrCode = new window.Html5Qrcode(scannerDivId);
+                    html5QrCode.scanFile(file, true)
+                      .then(decodedText => {
+                        if (typeof stopScanner === 'function') stopScanner();
+                        handleScanResult(decodedText);
+                      })
+                      .catch(() => {
+                        alert("QR Code tidak terdeteksi pada gambar. Pastikan file gambar QR Code jelas.");
+                      });
+                  } else {
+                    alert("Sistem pembaca QR belum siap.");
+                  }
+                }} 
+                style={{ fontSize: 12, width: '100%' }}
+              />
+            </div>
+
+            {cameraErr ? (
+              <div style={{
+                background: '#fef2f2', border: `1px solid #fecaca`,
+                borderRadius: 12, padding: 16, textAlign: 'center', marginBottom: 16,
+              }}>
+                <div style={{ fontSize: 24, marginBottom: 8 }}></div>
+                <div style={{ fontWeight: 700, color: T.red, marginBottom: 4 }}>Kamera tidak dapat diakses</div>
+                <div style={{ fontSize: 13, color: T.textSub }}>
+                  Silakan gunakan kotak alternatif simulasi di atas dengan memasukkan file foto/screenshot QR Code dari menu Admin agar demo tetap berjalan lancar.
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={scanStatus === 'scanning' ? stopScanner : startScanner}
+                style={{
+                  ...css.btn(scanStatus === 'scanning' ? T.red : T.navy),
+                  fontSize: 16, padding: '14px',
+                }}
+              >
+                {scanStatus === 'scanning' ? '✖ Tutup Kamera' : '📷 Buka Kamera & Scan QR'}
+              </button>
+            )}
+
+            <button
+              onClick={() => setStep(2)}
+              style={{ ...css.btn('transparent', T.textSub), border: `1px solid ${T.border}`, marginTop: 10, fontSize: 14 }}
+            >
+              ← Kembali
+            </button>
+          </div>
+        )}
+        <NavBar role="pegawai" />
+      </div>
+    );
+  }
 }
 
 // ─── HALAMAN ADMIN ────────────────────────────────────────────────────────────
