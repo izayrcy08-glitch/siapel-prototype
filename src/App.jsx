@@ -552,157 +552,117 @@ function HalamanPegawai() {
     </div>
   )
 
-  // ── Step 3: Scan QR (VERSI BARU ANTI-GAGAL) ──
-  if (step === 3) {
-    // Pengaman otomatis agar kamera terpanggil setelah halaman siap
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        if (scanStatus !== 'success' && scanStatus !== 'error' && scanStatus !== 'duplicate' && !cameraErr) {
-          startScanner();
-        }
-      }, 400);
-      return () => clearTimeout(timer);
-    }, []);
+  // ── Step 3: Scan QR ──
+  if (step === 3) return (
+    <div style={{ padding: '24px 16px 100px', maxWidth: 480, margin: '0 auto', minHeight: '100vh' }}>
 
-    return (
-      <div style={{ padding: '24px 16px 100px', maxWidth: 480, margin: '0 auto', minHeight: '100vh' }}>
-
-        {/* SUCCESS */}
-        {scanStatus === 'success' && (
-          <div style={{ textAlign: 'center', animation: 'fadeUp .3s ease' }}>
-            <div style={{ fontSize: 96, animation: 'checkPop .5s cubic-bezier(.36,.07,.19,.97)', marginBottom: 16 }}>✅</div>
-            <div style={{ fontSize: 32, fontWeight: 800, color: T.green, marginBottom: 8 }}>HADIR</div>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T.text, marginBottom: 4 }}>
-              Selamat, {selected.nama.split(' ')[0]}!
-            </div>
-            <div style={{ color: T.textSub, marginBottom: 4 }}>Absensi Anda berhasil tercatat.</div>
-            <div style={{ fontFamily: T.mono, color: T.textSub, fontSize: 13, marginBottom: 28 }}>
-              🕐 {scanTime}
-            </div>
-            <button onClick={reset} style={{ ...css.btn(T.navy), maxWidth: 240, margin: '0 auto' }}>
-              Selesai
-            </button>
+      {/* SUCCESS */}
+      {scanStatus === 'success' && (
+        <div style={{ textAlign: 'center', animation: 'fadeUp .3s ease' }}>
+          <div style={{ fontSize: 96, animation: 'checkPop .5s cubic-bezier(.36,.07,.19,.97)', marginBottom: 16 }}>✅</div>
+          <div style={{ fontSize: 32, fontWeight: 800, color: T.green, marginBottom: 8 }}>HADIR</div>
+          <div style={{ fontSize: 18, fontWeight: 600, color: T.text, marginBottom: 4 }}>
+            Selamat, {selected.nama.split(' ')[0]}!
           </div>
-        )}
-
-        {/* ERROR / DUPLICATE */}
-        {(scanStatus === 'error' || scanStatus === 'duplicate') && (
-          <div style={{ textAlign: 'center', animation: 'fadeUp .3s ease' }}>
-            <div style={{ fontSize: 72, marginBottom: 16 }}>{scanStatus === 'duplicate' ? '⚠️' : '❌'}</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: scanStatus === 'duplicate' ? T.amber : T.red, marginBottom: 8 }}>
-              {scanStatus === 'duplicate' ? 'Sudah Absen' : 'Gagal'}
-            </div>
-            <div style={{ color: T.textSub, marginBottom: 28, padding: '0 20px' }}>{scanMsg}</div>
-            <button
-              onClick={() => { setScanStatus(null); setCameraErr(false) }}
-              style={{ ...css.btn(T.navy), maxWidth: 240, margin: '0 auto 10px' }}
-            >
-              Coba Lagi
-            </button>
-            <button onClick={reset} style={{ ...css.btn('transparent', T.textSub), border: `1px solid ${T.border}`, maxWidth: 240, margin: '0 auto', fontSize: 14 }}>
-              Kembali ke Awal
-            </button>
+          <div style={{ color: T.textSub, marginBottom: 4 }}>Absensi Anda berhasil tercatat.</div>
+          <div style={{ fontFamily: T.mono, color: T.textSub, fontSize: 13, marginBottom: 28 }}>
+            🕐 {scanTime}
           </div>
-        )}
+          <button onClick={reset} style={{ ...css.btn(T.navy), maxWidth: 240, margin: '0 auto' }}>
+            Selesai
+          </button>
+        </div>
+      )}
 
-        {/* SCAN UI */}
-        {!scanStatus && (
-          <div style={{ animation: 'fadeUp .3s ease' }}>
-            <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <div style={{ fontSize: 13, color: T.textSub, fontWeight: 600, marginBottom: 4 }}>LANGKAH 3 / 3</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: T.navy, marginBottom: 6 }}>Scan QR Code</div>
-              <div style={{ color: T.textSub, fontSize: 14 }}>Arahkan kamera ke QR Code di layar Admin</div>
-            </div>
+      {/* ERROR / DUPLICATE */}
+      {(scanStatus === 'error' || scanStatus === 'duplicate') && (
+        <div style={{ textAlign: 'center', animation: 'fadeUp .3s ease' }}>
+          <div style={{ fontSize: 72, marginBottom: 16 }}>{scanStatus === 'duplicate' ? '⚠️' : '❌'}</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: scanStatus === 'duplicate' ? T.amber : T.red, marginBottom: 8 }}>
+            {scanStatus === 'duplicate' ? 'Sudah Absen' : 'Gagal'}
+          </div>
+          <div style={{ color: T.textSub, marginBottom: 28, padding: '0 20px' }}>{scanMsg}</div>
+          <button
+            onClick={() => { setScanStatus(null); setCameraErr(false) }}
+            style={{ ...css.btn(T.navy), maxWidth: 240, margin: '0 auto 10px' }}
+          >
+            Coba Lagi
+          </button>
+          <button onClick={reset} style={{ ...css.btn('transparent', T.textSub), border: `1px solid ${T.border}`, maxWidth: 240, margin: '0 auto', fontSize: 14 }}>
+            Kembali ke Awal
+          </button>
+        </div>
+      )}
 
-            {/* Pegawai chip */}
+      {/* SCAN UI */}
+      {!scanStatus && (
+        <div style={{ animation: 'fadeUp .3s ease' }}>
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <div style={{ fontSize: 13, color: T.textSub, fontWeight: 600, marginBottom: 4 }}>LANGKAH 3 / 3</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: T.navy, marginBottom: 6 }}>Scan QR Code</div>
+            <div style={{ color: T.textSub, fontSize: 14 }}>Arahkan kamera ke QR Code di layar Admin</div>
+          </div>
+
+          {/* Pegawai chip */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 10, background: '#fff',
+            borderRadius: 10, padding: '10px 14px', marginBottom: 20,
+            border: `1px solid ${T.border}`,
+          }}>
             <div style={{
-              display: 'flex', alignItems: 'center', gap: 10, background: '#fff',
-              borderRadius: 10, padding: '10px 14px', marginBottom: 20,
-              border: `1px solid ${T.border}`,
-            }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: 8, background: T.navy,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontWeight: 800, fontSize: 14, flexShrink: 0,
-              }}>{selected.nama.charAt(0)}</div>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: 13, color: T.text }}>{selected.nama}</div>
-                <div style={{ fontSize: 11, color: T.textSub, fontFamily: T.mono }}>{selected.nip}</div>
-              </div>
+              width: 36, height: 36, borderRadius: 8, background: T.navy,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#fff', fontWeight: 800, fontSize: 14, flexShrink: 0,
+            }}>{selected.nama.charAt(0)}</div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: T.text }}>{selected.nama}</div>
+              <div style={{ fontSize: 11, color: T.textSub, fontFamily: T.mono }}>{selected.nip}</div>
             </div>
-
-            {/* Camera container */}
-            <div style={{
-              borderRadius: 16, overflow: 'hidden', background: '#000',
-              minHeight: 220,
-              marginBottom: 16,
-            }}>
-              <div id={scannerDivId} style={{ width: '100%' }} />
-            </div>
-
-            {/* KOTAK SIMULASI UPLOAD GAMBAR - DIPASANG DI SINI AGAR TETAP MUNCUL SAAT ERROR */}
-            <div style={{ background: '#f0f4f8', borderRadius: 12, padding: 14, textAlign: 'center', marginBottom: 16, border: '1px solid #cbd5e1' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: T.navy, marginBottom: 6 }}>
-                🛠️ ALTERNATIF SIMULASI SCAN (ANTI-GAGAL DEMO)
-              </div>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file && window.Html5Qrcode) {
-                    const html5QrCode = new window.Html5Qrcode(scannerDivId);
-                    html5QrCode.scanFile(file, true)
-                      .then(decodedText => {
-                        if (typeof stopScanner === 'function') stopScanner();
-                        handleScanResult(decodedText);
-                      })
-                      .catch(() => {
-                        alert("QR Code tidak terdeteksi pada gambar. Pastikan file gambar QR Code jelas.");
-                      });
-                  } else {
-                    alert("Sistem pembaca QR belum siap.");
-                  }
-                }} 
-                style={{ fontSize: 12, width: '100%' }}
-              />
-            </div>
-
-            {cameraErr ? (
-              <div style={{
-                background: '#fef2f2', border: `1px solid #fecaca`,
-                borderRadius: 12, padding: 16, textAlign: 'center', marginBottom: 16,
-              }}>
-                <div style={{ fontSize: 24, marginBottom: 8 }}></div>
-                <div style={{ fontWeight: 700, color: T.red, marginBottom: 4 }}>Kamera tidak dapat diakses</div>
-                <div style={{ fontSize: 13, color: T.textSub }}>
-                  Silakan gunakan kotak alternatif simulasi di atas dengan memasukkan file foto/screenshot QR Code dari menu Admin agar demo tetap berjalan lancar.
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={scanStatus === 'scanning' ? stopScanner : startScanner}
-                style={{
-                  ...css.btn(scanStatus === 'scanning' ? T.red : T.navy),
-                  fontSize: 16, padding: '14px',
-                }}
-              >
-                {scanStatus === 'scanning' ? '✖ Tutup Kamera' : '📷 Buka Kamera & Scan QR'}
-              </button>
-            )}
-
-            <button
-              onClick={() => setStep(2)}
-              style={{ ...css.btn('transparent', T.textSub), border: `1px solid ${T.border}`, marginTop: 10, fontSize: 14 }}
-            >
-              ← Kembali
-            </button>
           </div>
-        )}
-        <NavBar role="pegawai" />
-      </div>
-    );
-  }
+
+          {/* Camera container */}
+          <div style={{
+            borderRadius: 16, overflow: 'hidden', background: '#000',
+            minHeight: scanStatus === 'scanning' ? 300 : 0,
+            marginBottom: 16,
+          }}>
+            <div id={scannerDivId} />
+          </div>
+
+          {cameraErr ? (
+            <div style={{
+              background: '#fef2f2', border: `1px solid #fecaca`,
+              borderRadius: 12, padding: 16, textAlign: 'center', marginBottom: 16,
+            }}>
+              <div style={{ fontSize: 24, marginBottom: 8 }}>📵</div>
+              <div style={{ fontWeight: 700, color: T.red, marginBottom: 4 }}>Kamera tidak dapat diakses</div>
+              <div style={{ fontSize: 13, color: T.textSub }}>
+                Gunakan Chrome di Android atau Safari di iPhone. Pastikan izin kamera diaktifkan.
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={scanStatus === 'scanning' ? stopScanner : startScanner}
+              style={{
+                ...css.btn(scanStatus === 'scanning' ? T.red : T.navy),
+                fontSize: 16, padding: '14px',
+              }}
+            >
+              {scanStatus === 'scanning' ? '✖ Tutup Kamera' : '📷 Buka Kamera & Scan QR'}
+            </button>
+          )}
+
+          <button
+            onClick={() => setStep(2)}
+            style={{ ...css.btn('transparent', T.textSub), border: `1px solid ${T.border}`, marginTop: 10, fontSize: 14 }}
+          >
+            ← Kembali
+          </button>
+        </div>
+      )}
+      <NavBar role="pegawai" />
+    </div>
+  )
 }
 
 // ─── HALAMAN ADMIN ────────────────────────────────────────────────────────────
@@ -842,36 +802,11 @@ function HalamanAdmin() {
   )
 }
 
-// ─── DATA DUMMY SANKSI ───────────────────────────────────────────────────────
-// Berdasarkan PP No. 94 Tahun 2021:
-// Ringan  : tidak hadir 3–5 hari kerja dalam sebulan → Teguran Lisan / Tertulis
-// Sedang  : tidak hadir 6–10 hari kerja → Penundaan KGB / Penurunan Pangkat
-// Berat   : tidak hadir 11+ hari kerja  → Pembebasan Jabatan / Pemberhentian
-const DUMMY_SANKSI = [
-  { nama: 'SALIANSYAH', nip: '197407052007011026', jabatan: 'Caraka I', golongan: 'II/d', bidang: 'Umum',           tidakHadir: 14, bulan: 'Mei 2026' },
-  { nama: 'BUDIMAN',    nip: '197506102007011020', jabatan: 'Juru Pengairan', golongan: 'II/a', bidang: 'Sumber Daya Air', tidakHadir: 11, bulan: 'Mei 2026' },
-  { nama: 'GEZALI',     nip: '197302042007011015', jabatan: 'Pengadministrasi Umum', golongan: 'II/d', bidang: 'Umum', tidakHadir: 9, bulan: 'Mei 2026' },
-  { nama: 'LAMBAK',     nip: '198301302008011012', jabatan: 'Teknisi Keciptakaryaan', golongan: 'II/d', bidang: 'Cipta Karya', tidakHadir: 8, bulan: 'Mei 2026' },
-  { nama: 'SUKARDI',    nip: '198312222012121002', jabatan: 'Caraka I', golongan: 'I/c', bidang: 'Umum',             tidakHadir: 7, bulan: 'Mei 2026' },
-  { nama: 'HENRI LUKAS', nip: '197101172007011014', jabatan: 'Juru Operasi Sumber Daya Air', golongan: 'II/d', bidang: 'Sumber Daya Air', tidakHadir: 6, bulan: 'Mei 2026' },
-  { nama: 'SAIDI',      nip: '197905132007011007', jabatan: 'Juru Pengairan', golongan: 'II/c', bidang: 'Sumber Daya Air', tidakHadir: 5, bulan: 'Mei 2026' },
-  { nama: 'SUGIHERTONO', nip: '196908142006041009', jabatan: 'Pengamat Perairan', golongan: 'II/c', bidang: 'Sumber Daya Air', tidakHadir: 4, bulan: 'Mei 2026' },
-  { nama: 'EMMY SUTANTY', nip: '197905152010012017', jabatan: 'Pengadministrasi Umum', golongan: 'II/d', bidang: 'Umum', tidakHadir: 4, bulan: 'Mei 2026' },
-  { nama: 'IMBAI',      nip: '196909121997031006', jabatan: 'Petugas Verifikasi Keuangan', golongan: 'III/b', bidang: 'Sekretariat', tidakHadir: 3, bulan: 'Mei 2026' },
-  { nama: 'SENGHO MARGONO', nip: '197707072012121002', jabatan: 'Pengemudi', golongan: 'II/c', bidang: 'Umum',    tidakHadir: 3, bulan: 'Mei 2026' },
-]
-
-const getSanksi = (tidakHadir) => {
-  if (tidakHadir >= 11) return { zona: 'Berat', warna: T.red, bg: '#fef2f2', ikon: '🔴', label: 'Pembebasan Jabatan / Pemberhentian' }
-  if (tidakHadir >= 6)  return { zona: 'Sedang', warna: T.amber, bg: '#fffbeb', ikon: '🟡', label: 'Penundaan KGB / Penurunan Pangkat' }
-  return                       { zona: 'Ringan', warna: '#16a34a', bg: '#f0fdf4', ikon: '🟢', label: 'Teguran Lisan / Tertulis' }
-}
-
 // ─── HALAMAN PIMPINAN ─────────────────────────────────────────────────────────
 function HalamanPimpinan() {
-  const [absensi, setAbsensi] = useState([])
-  const [now, setNow]         = useState(new Date())
-  const [tab, setTab]         = useState('hadir')
+  const [absensi, setAbsensi]   = useState([])
+  const [now, setNow]           = useState(new Date())
+  const [tab, setTab]           = useState('hadir')
 
   useEffect(() => {
     const refresh = () => { setAbsensi(getAbsensi()); setNow(new Date()) }
@@ -880,8 +815,8 @@ function HalamanPimpinan() {
     return () => clearInterval(t)
   }, [])
 
-  const hadir    = absensi.length
-  const belum    = TOTAL - hadir
+  const hadir   = absensi.length
+  const belum   = TOTAL - hadir
   const pctHadir = Math.round((hadir / TOTAL) * 100)
 
   const nipHadir  = new Set(absensi.map(a => a.nip))
@@ -896,11 +831,6 @@ function HalamanPimpinan() {
     }
   }
 
-  // Ringkasan zona sanksi
-  const zonaBerat  = DUMMY_SANKSI.filter(p => p.tidakHadir >= 11)
-  const zonaSedang = DUMMY_SANKSI.filter(p => p.tidakHadir >= 6 && p.tidakHadir < 11)
-  const zonaRingan = DUMMY_SANKSI.filter(p => p.tidakHadir >= 3 && p.tidakHadir < 6)
-
   const statCards = [
     { label: 'Hadir', value: hadir, color: T.green, bg: '#f0fdf4', icon: '✅' },
     { label: 'Belum Absen', value: belum, color: T.red, bg: '#fef2f2', icon: '⏳' },
@@ -908,16 +838,21 @@ function HalamanPimpinan() {
     { label: 'Persentase', value: `${pctHadir}%`, color: T.amber, bg: '#fffbeb', icon: '📈' },
   ]
 
-  const tabs = [
-    ['hadir',  `✅ Hadir (${hadir})`],
-    ['belum',  `⏳ Belum (${belum})`],
-    ['sanksi', `⚠️ Sanksi (${DUMMY_SANKSI.length})`],
-  ]
-
   return (
     <div style={{ background: T.bg, minHeight: '100vh', paddingBottom: 100 }}>
       {/* Header */}
-      <div style={{ background: T.navy, padding: '20px 16px 24px' }}>
+      <div style={{ background: T.navy, padding: '20px 16px 24px', position: 'relative' }}>
+        <button
+          onClick={handleReset}
+          style={{
+            position: 'absolute', right: 14, top: 14,
+            background: T.red, color: '#fff', border: 'none',
+            borderRadius: 8, padding: '6px 10px', fontSize: 11,
+            fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer',
+          }}
+        >
+          🔄 Reset
+        </button>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,.6)', marginBottom: 4 }}>
           🏛️ SIAPEL — Dashboard Pimpinan
         </div>
@@ -928,14 +863,18 @@ function HalamanPimpinan() {
           DPUPR Kab. Barito Utara • Update: {formatJam(now)}
         </div>
         <div style={{ marginTop: 10 }}>
-          <div style={{ background: 'rgba(255,255,255,.15)', borderRadius: 8, height: 8, overflow: 'hidden' }}>
+          <div style={{
+            background: 'rgba(255,255,255,.15)', borderRadius: 8,
+            height: 8, overflow: 'hidden',
+          }}>
             <div style={{
               width: `${pctHadir}%`, height: '100%',
-              background: T.green, borderRadius: 8, transition: 'width .5s ease',
+              background: T.green, borderRadius: 8,
+              transition: 'width .5s ease',
             }} />
           </div>
           <div style={{ color: 'rgba(255,255,255,.7)', fontSize: 12, marginTop: 4 }}>
-            {pctHadir}% kehadiran tercatat hari ini
+            {pctHadir}% kehadiran tercatat
           </div>
         </div>
       </div>
@@ -953,16 +892,16 @@ function HalamanPimpinan() {
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', gap: 6, marginBottom: 14, overflowX: 'auto' }}>
-          {tabs.map(([key, label]) => (
+        <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+          {[['hadir', `✅ Hadir (${hadir})`], ['belum', `⏳ Belum (${belum})`]].map(([key, label]) => (
             <button
               key={key}
               onClick={() => setTab(key)}
               style={{
-                flexShrink: 0, padding: '10px 12px', border: 'none', borderRadius: 10,
+                flex: 1, padding: '10px 8px', border: 'none', borderRadius: 10,
                 background: tab === key ? T.navy : '#fff',
                 color: tab === key ? '#fff' : T.textSub,
-                fontFamily: 'inherit', fontWeight: 700, fontSize: 12,
+                fontFamily: 'inherit', fontWeight: 700, fontSize: 13,
                 cursor: 'pointer', transition: 'all .15s',
                 boxShadow: tab === key ? 'none' : '0 1px 3px rgba(0,0,0,.06)',
               }}
@@ -972,7 +911,7 @@ function HalamanPimpinan() {
           ))}
         </div>
 
-        {/* ── TAB: HADIR ── */}
+        {/* Hadir table */}
         {tab === 'hadir' && (
           <div style={css.card({ padding: 0, overflow: 'hidden' })}>
             {hadirData.length === 0 ? (
@@ -986,7 +925,7 @@ function HalamanPimpinan() {
                   <thead>
                     <tr style={{ background: T.navy }}>
                       {['No', 'Nama', 'NIP', 'Jabatan', 'Jam'].map(h => (
-                        <th key={h} style={{ color: '#fff', padding: '10px', textAlign: 'left', fontWeight: 700, whiteSpace: 'nowrap' }}>{h}</th>
+                        <th key={h} style={{ color: '#fff', padding: '10px 10px', textAlign: 'left', fontWeight: 700, whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -996,7 +935,7 @@ function HalamanPimpinan() {
                         <td style={{ padding: '9px 10px', color: T.textSub }}>{i + 1}</td>
                         <td style={{ padding: '9px 10px', fontWeight: 600, color: T.text }}>{a.nama}</td>
                         <td style={{ padding: '9px 10px', fontFamily: T.mono, color: T.textSub }}>{a.nip}</td>
-                        <td style={{ padding: '9px 10px', color: T.textSub, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.jabatan}</td>
+                        <td style={{ padding: '9px 10px', color: T.textSub, whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: 120, textOverflow: 'ellipsis' }}>{a.jabatan}</td>
                         <td style={{ padding: '9px 10px', fontFamily: T.mono, color: T.green, fontWeight: 700, whiteSpace: 'nowrap' }}>{a.waktuScan}</td>
                       </tr>
                     ))}
@@ -1007,7 +946,7 @@ function HalamanPimpinan() {
           </div>
         )}
 
-        {/* ── TAB: BELUM ── */}
+        {/* Belum table */}
         {tab === 'belum' && (
           <div style={css.card({ padding: 0, overflow: 'hidden' })}>
             {belumData.length === 0 ? (
@@ -1021,7 +960,7 @@ function HalamanPimpinan() {
                   <thead>
                     <tr style={{ background: '#fef2f2' }}>
                       {['No', 'Nama', 'NIP', 'Jabatan', 'Gol'].map(h => (
-                        <th key={h} style={{ color: T.red, padding: '10px', textAlign: 'left', fontWeight: 700, whiteSpace: 'nowrap' }}>{h}</th>
+                        <th key={h} style={{ color: T.red, padding: '10px 10px', textAlign: 'left', fontWeight: 700, whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -1029,7 +968,10 @@ function HalamanPimpinan() {
                     {belumData.map((p, i) => {
                       const isPejabat = p.golongan.startsWith('IV')
                       return (
-                        <tr key={p.nip} style={{ borderBottom: `1px solid ${T.border}`, background: isPejabat ? '#fff7ed' : (i % 2 ? T.bg : '#fff') }}>
+                        <tr key={p.nip} style={{
+                          borderBottom: `1px solid ${T.border}`,
+                          background: isPejabat ? '#fff7ed' : (i % 2 ? T.bg : '#fff'),
+                        }}>
                           <td style={{ padding: '9px 10px', color: T.textSub }}>{i + 1}</td>
                           <td style={{ padding: '9px 10px', fontWeight: isPejabat ? 700 : 500, color: isPejabat ? T.amber : T.text }}>
                             {isPejabat ? '⭐ ' : ''}{p.nama}
@@ -1046,96 +988,101 @@ function HalamanPimpinan() {
             )}
           </div>
         )}
-
-        {/* ── TAB: SANKSI ── */}
-        {tab === 'sanksi' && (
-          <div>
-            {/* Label demo */}
-            <div style={{
-              background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10,
-              padding: '10px 14px', marginBottom: 16, fontSize: 12,
-              color: '#92400e', display: 'flex', alignItems: 'center', gap: 8,
-            }}>
-              <span style={{ fontSize: 16 }}>📋</span>
-              <span><strong>Data contoh</strong> — rekap ketidakhadiran bulan Mei 2026 berdasarkan PP No. 94 Tahun 2021</span>
-            </div>
-
-            {/* Ringkasan zona */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 16 }}>
-              {[
-                { label: 'Zona Berat', count: zonaBerat.length, color: T.red, bg: '#fef2f2', ikon: '🔴', sub: '≥11 hari' },
-                { label: 'Zona Sedang', count: zonaSedang.length, color: T.amber, bg: '#fffbeb', ikon: '🟡', sub: '6–10 hari' },
-                { label: 'Zona Ringan', count: zonaRingan.length, color: '#16a34a', bg: '#f0fdf4', ikon: '🟢', sub: '3–5 hari' },
-              ].map(z => (
-                <div key={z.label} style={{ background: z.bg, borderRadius: 12, padding: '12px 10px', textAlign: 'center', border: `1px solid ${z.color}33` }}>
-                  <div style={{ fontSize: 20 }}>{z.ikon}</div>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: z.color, fontFamily: T.mono }}>{z.count}</div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: z.color }}>{z.label}</div>
-                  <div style={{ fontSize: 10, color: T.textSub }}>{z.sub}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Tabel detail */}
-            <div style={css.card({ padding: 0, overflow: 'hidden' })}>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
-                  <thead>
-                    <tr style={{ background: '#1e3a5f' }}>
-                      {['No', 'Nama', 'Bidang', 'Tdk Hadir', 'Zona', 'Sanksi (PP 94/2021)'].map(h => (
-                        <th key={h} style={{ color: '#fff', padding: '10px', textAlign: 'left', fontWeight: 700, whiteSpace: 'nowrap' }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {DUMMY_SANKSI.map((p, i) => {
-                      const s = getSanksi(p.tidakHadir)
-                      return (
-                        <tr key={p.nip} style={{ borderBottom: `1px solid ${T.border}`, background: s.bg }}>
-                          <td style={{ padding: '9px 10px', color: T.textSub }}>{i + 1}</td>
-                          <td style={{ padding: '9px 10px', fontWeight: 600, color: T.text, whiteSpace: 'nowrap' }}>{p.nama}</td>
-                          <td style={{ padding: '9px 10px', color: T.textSub, whiteSpace: 'nowrap' }}>{p.bidang}</td>
-                          <td style={{ padding: '9px 10px', textAlign: 'center' }}>
-                            <span style={{
-                              background: s.warna, color: '#fff', borderRadius: 6,
-                              padding: '2px 8px', fontFamily: T.mono, fontWeight: 700, fontSize: 13,
-                            }}>{p.tidakHadir}</span>
-                          </td>
-                          <td style={{ padding: '9px 10px', whiteSpace: 'nowrap' }}>
-                            <span style={{
-                              background: s.bg, color: s.warna, border: `1px solid ${s.warna}55`,
-                              borderRadius: 6, padding: '2px 8px', fontWeight: 700, fontSize: 11,
-                            }}>{s.ikon} {s.zona}</span>
-                          </td>
-                          <td style={{ padding: '9px 10px', color: s.warna, fontWeight: 600, fontSize: 11, whiteSpace: 'nowrap' }}>{s.label}</td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Tombol reset — dipindah ke sini, lebih rapi */}
-            <button
-              onClick={handleReset}
-              style={{
-                ...css.btn('#fef2f2', T.red),
-                border: `1px solid #fecaca`,
-                marginTop: 20, fontSize: 13,
-              }}
-            >
-              🔄 Reset Data Absensi Hari Ini (untuk testing)
-            </button>
-          </div>
-        )}
       </div>
-
+<FiturSanksiDisiplin />
       <NavBar role="pimpinan" />
     </div>
   )
 }
 
+// ─── SIMULASI FITUR AKUMULASI SANKSI (PP NO 94 / 2021) ──────────────────────
+function FiturSanksiDisiplin() {
+  // Data pura-pura/simulasi untuk demo ke pimpinan menggunakan nama pegawai riil
+  const dataPelanggaranSimulasi = [
+    {
+      nama: "ABDUL ROHMAN",
+      nip: "197903122008011023",
+      jabatan: "Pengawas Irigasi",
+      akumulasiMangkir: 4, // Hari
+      kategoriSanksi: "Ringan (Teguran Lisan)",
+      statusPP: "Mendekati Batas Teguran Tertulis (Min. 5 Hari)",
+      warna: T.amber,
+      keterangan: "Sistem mendeteksi 4 hari tidak hadir berturut-turut tanpa keterangan yang sah."
+    },
+    {
+      nama: "SENGHO MARGONO",
+      nip: "197707072012121002",
+      jabatan: "Pengemudi",
+      akumulasiMangkir: 11, // Hari
+      kategoriSanksi: "Sedang (Pemotongan Tukin 25% selama 6 Bulan)",
+      statusPP: "Pelanggaran PP 94/2021 Pasal 10 (11-13 Hari Mangkir)",
+      warna: T.red,
+      keterangan: "Akumulasi tidak masuk kerja konsekutif mencapai 11 hari kerja tanpa berkas izin."
+    },
+    {
+      nama: "BUDIMAN",
+      nip: "197506102007011020",
+      jabatan: "Juru Pengairan",
+      akumulasiMangkir: 22, // Hari
+      kategoriSanksi: "Berat (Penurunan Jabatan Setingkat Lebih Rendah)",
+      statusPP: "Kritis! Ambang Batas Pemberhentian (Batas Atas 28 Hari)",
+      warna: '#7f1d1d', // Merah gelap/maroon
+      keterangan: "Pelanggaran disiplin berat terdeteksi otomatis. Rekomendasi sidang kode etik internal."
+    }
+  ]
+
+  return (
+    <div style={{ marginTop: 24, marginBottom: 24 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <h3 style={{ fontSize: 16, fontWeight: 700, color: T.navy }}>
+          ⚠️ Pengawasan Disiplin Otomatis (PP No. 94/2021)
+        </h3>
+        <span style={{ fontSize: 11, background: T.navyL, color: '#fff', padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>
+          Simulasi Demo
+        </span>
+      </div>
+
+      <p style={{ fontSize: 13, color: T.textSub, marginBottom: 16, lineHeight: '1.4' }}>
+        Sistem mengalkulasi akumulasi absensi alpa secara *real-time* dan mencocokkannya dengan regulasi disiplin PNS nasional.
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {dataPelanggaranSimulasi.map((p, idx) => (
+          <div key={idx} style={css.card({ borderLeft: `6px solid ${p.warna}`, padding: 16 })}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 8 }}>
+              <div>
+                <h4 style={{ fontSize: 14, fontWeight: 700, color: T.text }}>{p.nama}</h4>
+                <p style={{ fontSize: 12, color: T.textSub, fontFamily: T.mono }}>NIP. {p.nip} • {p.jabatan}</p>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ fontSize: 20, fontWeight: 800, color: p.warna }}>{p.akumulasiMangkir}</span>
+                <span style={{ fontSize: 11, color: T.textSub, display: 'block' }}> Hari Alpa</span>
+              </div>
+            </div>
+
+            <div style={{ background: T.bg, padding: '10px 12px', borderRadius: 8, marginBottom: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: p.warna, textTransform: 'uppercase', marginBottom: 2 }}>
+                Rekomendasi Sanksi:
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: T.text }}>
+                {p.kategoriSanksi}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center', fontSize: 11, color: T.textSub }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: p.warna, display: 'inline-block' }}></span>
+              <span style={{ fontWeight: 500, color: T.text }}>Status:</span> {p.statusPP}
+            </div>
+            
+            <p style={{ fontSize: 11, color: T.textSub, fontStyle: 'italic', marginTop: 6, borderTop: `1px dashed ${T.border}`, paddingTop: 6 }}>
+              "{p.keterangan}"
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 // ─── APP ROOT ─────────────────────────────────────────────────────────────────
 export default function App() {
   const role = new URLSearchParams(window.location.search).get('role') || 'pegawai'
